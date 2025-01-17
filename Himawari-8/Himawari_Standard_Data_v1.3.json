@@ -1,0 +1,342 @@
+{
+    "Formation":
+    {
+        "band1_6": [
+            ["Block number1", "i1", 1],
+            ["Block length1", "i2", 1],
+            ["Total number of header blocks ", "i2", 1],
+            ["Byte order", "i1", 1],
+            ["Satellite name", "C", 16],
+            ["Processing center name", "C", 16],
+            ["Observation area", "C", 4],
+            ["Other observation information", "C", 2],
+            ["Observation timeline", "i2", 1],
+            ["Observation start time", "R8", 1],
+            ["Observation end time", "R8", 1],
+            ["File creation time", "R8", 1],
+            ["Total header length", "i4", 1],
+            ["Total data length", "i4", 1],
+            ["Quality flag 1", "i1", 1],
+            ["Quality flag 2 ", "i1", 1],
+            ["Quality flag 3", "i1", 1],
+            ["Quality flag 4", "i1", 1],
+            ["File format version", "C", 32],
+            ["File name", "C", 128],
+            ["Spare1", "", 40],
+            
+            ["Block number2", "i1", 1],
+            ["Block length2", "i2", 1],
+            ["Number of bits per pixel", "i2", 1],
+            ["Number of columns", "i2", 1],
+            ["Number of lines", "i2", 1],
+            ["Compression flag for data", "i1", 1],
+            ["Spare2", "", 40],
+
+            ["Block number3", "i1", 1],
+            ["Block length3", "i2", 1],
+            ["sub_lon", "R8", 1],
+            ["Column scaling factor", "i4", 1],
+            ["Line scaling factor", "i4", 1],
+            ["Column offset", "R4", 1],
+            ["Line offset", "R4", 1],
+            ["Distance from Earth's center to virtual satellite", "R8", 1],
+            ["Earth's equatorial radius", "R8", 1],
+            ["Earth's polar radius", "R8", 1],
+            ["var1", "R8", 1],
+            ["var2", "R8", 1],
+            ["var3", "R8", 1],
+            ["Coefficient for sd", "R8", 1],
+            ["Resampling types", "i2", 1],
+            ["Resampling size", "i2", 1],
+            ["Spare3", "", 40],
+
+            ["Block number4", "i1", 1],
+            ["Block length4", "i2", 1],
+            ["Navigation information time", "R8", 1],
+            ["SSP longitude", "R8", 1],
+            ["SSP latitude", "R8", 1],
+            ["Distance from Earth's center to Satellite", "R8", 1],
+            ["Nadir longitude", "R8", 1],
+            ["Nadir latitude", "R8", 1],
+            ["Sun's position", "R8", 3],
+            ["Moon's position", "R8", 3],
+            ["Spare4", "", 40],
+
+            ["Block number5", "i1", 1],
+            ["Block length5", "i2", 1],
+            ["Band number", "i2", 1],
+            ["Central wave length", "R8", 1],
+            ["Valid number of bits per pixel", "i2", 1],
+            ["Count value of error pixels", "i2", 1],
+            ["Count value of pixels outside scan area", "i2", 1],
+            ["Slope for count-radiance conversion equation", "R8", 1],
+            ["Intercept for count-radiance conversion equation", "R8", 1],
+            ["Coefficient for transformation from radiance  to albedo", "R8", 1],
+            ["Update time of the values of the following No. 12 and No. 13", "R8", 1],
+            ["Calibrated Slope for count-radiance conversion equation_updated value of No. 8 of this block", "R8", 1],
+            ["Calibrated Intercept for count-radiance conversion equation_updated value of No. 9 of this block", "R8", 1],
+            ["Spare5", "", 80],
+
+            ["Block number6", "i1", 1],
+            ["Block length6", "i2", 1],
+            ["GSICS calibration coefficient_Intercept", "R8", 1],
+            ["GSICS calibration coefficient_Slope", "R8", 1],
+            ["GSICS calibration coefficient_Quadratic term", "R8", 1],
+            ["Radiance bias for standard scene", "R8", 1],
+            ["Uncertainty of radiance bias for standard scene", "R8", 1],
+            ["Radiance for standard scene", "R8", 1],
+            ["Start time of GSICS Correction validity period", "R8", 1],
+            ["End time of GSICS Correction validity period", "R8", 1],
+            ["Radiance validity range of GSICS calibration coefficients_upper limit", "R4", 1],
+            ["Radiance validity range of GSICS calibration coefficients_lower limit", "R4", 1],
+            ["File name of GSICS Correction", "C", 128],
+            ["Spare6", "", 56],
+
+            ["Block number7", "i1", 1],
+            ["Block length7", "i2", 1],
+            ["Total number of segments", "i1", 1],
+            ["Segment sequence number", "i1", 1],
+            ["First line number of image segment", "i2", 1],
+            ["Spare7", "", 40],
+
+            ["Block number8", "i1", 1],
+            ["Block length8", "i2", 1],
+            ["Center column of rotation", "R4", 1],
+            ["Center line of rotation", "R4", 1],
+            ["Amount of rotational correction", "R8", 1],
+            ["Number of correction information data for column and line direction", "i2", 1],
+            ["Line number after rotation", "i2", 1],
+            ["Shift amount for column direction", "R4", 1],
+            ["Shift amount for line direction8", "R4", 1],
+            ["Spare8", "", 50],
+
+            ["Block number9", "i1", 1],
+            ["Block length9", "i2", 1],
+            ["Number of observation times9", "i2", 1],
+            ["Line number9", "i2", 1],
+            ["Observation time9", "R8", 1],
+            ["Spare9", "", 70],
+
+            ["Block number10", "i1", 1],
+            ["Block length10", "i4", 1],
+            ["Number of error information data", "i2", 1],
+            ["Line number10", "i2", 1],
+            ["Number of error pixels per line10", "i2", 1],
+            ["Spare10", "", 36],
+
+            ["Block number11", "i1", 1],
+            ["Block length11", "i2", 1],
+            ["Spare11", "", 256],
+
+            ["Count value of each pixel", "i2", "columns*lines"]],
+        "band7_16":[
+            ["Block number1", "i1", 1],
+            ["Block length1", "i2", 1],
+            ["Total number of header blocks ", "i2", 1],
+            ["Byte order", "i1", 1],
+            ["Satellite name", "C", 16],
+            ["Processing center name", "C", 16],
+            ["Observation area", "C", 4],
+            ["Other observation information", "C", 2],
+            ["Observation timeline", "i2", 1],
+            ["Observation start time", "R8", 1],
+            ["Observation end time", "R8", 1],
+            ["File creation time", "R8", 1],
+            ["Total header length", "i4", 1],
+            ["Total data length", "i4", 1],
+            ["Quality flag 1", "i1", 1],
+            ["Quality flag 2 ", "i1", 1],
+            ["Quality flag 3", "i1", 1],
+            ["Quality flag 4", "i1", 1],
+            ["File format version", "C", 32],
+            ["File name ", "C", 128],
+            ["Spare1", "", 40],
+            
+            ["Block number2", "i1", 1],
+            ["Block length2", "i2", 1],
+            ["Number of bits per pixel", "i2", 1],
+            ["Number of columns", "i2", 1],
+            ["Number of lines", "i2", 1],
+            ["Compression flag for data", "i1", 1],
+            ["Spare2", "", 40],
+
+            ["Block number3", "i1", 1],
+            ["Block length3", "i2", 1],
+            ["sub_lon", "R8", 1],
+            ["Column scaling factor", "i4", 1],
+            ["Line scaling factor", "i4", 1],
+            ["Column offset", "R4", 1],
+            ["Line offset", "R4", 1],
+            ["Distance from Earth's center to virtual satellite", "R8", 1],
+            ["Earth's equatorial radius", "R8", 1],
+            ["Earth's polar radius", "R8", 1],
+            ["var1", "R8", 1],
+            ["var2", "R8", 1],
+            ["var3", "R8", 1],
+            ["Coefficient for sd", "R8", 1],
+            ["Resampling types", "i2", 1],
+            ["Resampling size", "i2", 1],
+            ["Spare3", "", 40],
+
+            ["Block number4", "i1", 1],
+            ["Block length4", "i2", 1],
+            ["Navigation information time", "R8", 1],
+            ["SSP longitude", "R8", 1],
+            ["SSP latitude", "R8", 1],
+            ["Distance from Earth's center to Satellite", "R8", 1],
+            ["Nadir longitude", "R8", 1],
+            ["Nadir latitude", "R8", 1],
+            ["Sun's position", "R8", 3],
+            ["Moon's position", "R8", 3],
+            ["Spare4", "", 40],
+
+            ["Block number5","i1",1],
+            ["Block length5","i2",1],
+            ["Band number","i2",1],
+            ["Central wave length","R8",1],
+            ["Valid number of bits per pixel","i2",1],
+            ["Count value of error pixels","i2",1],
+            ["Count value of pixels outside scan area","i2",1],
+            ["Slope for count-radiance conversion equation","R8",1],
+            ["Intercept for count-radiance conversion equation","R8",1],
+            ["radiance to brightness temperature_c0","R8",1],
+            ["radiance to brightness temperature_c1","R8",1],
+            ["radiance to brightness temperature_c2","R8",1],
+            ["brightness temperature to radiance_C0","R8",1],
+            ["brightness temperature to radianceC1","R8",1],
+            ["brightness temperature to radianceC2","R8",1],
+            ["Speed of light","R8",1],
+            ["Planck constant","R8",1],
+            ["Boltzmann constant","R8",1],
+            ["Spare5","",40],
+
+            ["Block number6", "i1", 1],
+            ["Block length6", "i2", 1],
+            ["GSICS calibration coefficient_Intercept", "R8", 1],
+            ["GSICS calibration coefficient_Slope", "R8", 1],
+            ["GSICS calibration coefficient_Quadratic term", "R8", 1],
+            ["Radiance bias for standard scene", "R8", 1],
+            ["Uncertainty of radiance bias for standard scene", "R8", 1],
+            ["Radiance for standard scene", "R8", 1],
+            ["Start time of GSICS Correction validity period", "R8", 1],
+            ["End time of GSICS Correction validity period", "R8", 1],
+            ["Radiance validity range of GSICS calibration coefficients_upper limit", "R4", 1],
+            ["Radiance validity range of GSICS calibration coefficients_lower limit", "R4", 1],
+            ["File name of GSICS Correction", "C", 128],
+            ["Spare6", "", 56],
+
+            ["Block number7", "i1", 1],
+            ["Block length7", "i2", 1],
+            ["Total number of segments", "i1", 1],
+            ["Segment sequence number", "i1", 1],
+            ["First line number of image segment", "i2", 1],
+            ["Spare7", "", 40],
+
+            ["Block number8", "i1", 1],
+            ["Block length8", "i2", 1],
+            ["Center column of rotation", "R4", 1],
+            ["Center line of rotation", "R4", 1],
+            ["Amount of rotational correction", "R8", 1],
+            ["Number of correction information data for column and line direction", "i2", 1],
+            ["Line number after rotation", "i2", 1],
+            ["Shift amount for column direction", "R4", 1],
+            ["Shift amount for line direction8", "R4", 1],
+            ["Spare8", "", 50],
+
+            ["Block number9", "i1", 1],
+            ["Block length9", "i2", 1],
+            ["Number of observation times9", "i2", 1],
+            ["Line number9", "i2", 1],
+            ["Observation time9", "R8", 1],
+            ["Spare9", "", 70],
+
+            ["Block number10", "i1", 1],
+            ["Block length10", "i4", 1],
+            ["Number of error information data", "i2", 1],
+            ["Line number10", "i2", 1],
+            ["Number of error pixels per line10", "i2", 1],
+            ["Spare10", "", 36],
+
+            ["Block number11", "i1", 1],
+            ["Block length11", "i2", 1],
+            ["Spare11", "", 256],
+
+            ["Count value of each pixel", "i2", "columns*lines"]]
+    },
+
+    "Frame":
+    {
+        "FullDisk":
+        {
+            "band3":{
+                "Spatial resolution": 0.5,
+                "East-west direction": 22000,
+                "North-south direction": 22000
+            },
+            "band124":{
+                "Spatial resolution": 1,
+                "East-west direction": 11000,
+                "North-south direction": 11000
+            },
+            "band5_16":{
+                "Spatial resolution": 2,
+                "East-west direction": 5500,
+                "North-south direction": 5500
+            }
+        },
+        "JapanArea":
+        {
+            "band3":{
+                "Spatial resolution": 0.5,
+                "East-west direction": 6000,
+                "North-south direction": 4800
+            },
+            "band124":{
+                "Spatial resolution": 1,
+                "East-west direction": 3000,
+                "North-south direction": 2400
+            },
+            "band5_16":{
+                "Spatial resolution": 2,
+                "East-west direction": 1500,
+                "North-south direction": 1200
+            }
+        },
+        "TargetArea":
+        {
+            "band3":{
+                "Spatial resolution": 0.5,
+                "East-west direction": 2000,
+                "North-south direction": 2000
+            },
+            "band124":{
+                "Spatial resolution": 1,
+                "East-west direction": 1000,
+                "North-south direction": 1000
+            },
+            "band5_16":{
+                "Spatial resolution": 2,
+                "East-west direction": 500,
+                "North-south direction": 500
+            }
+        },
+        "LandmarkArea":
+        {
+            "band3":{
+                "Spatial resolution": 0.5,
+                "East-west direction": 2000,
+                "North-south direction": 1000
+            },
+            "band124":{
+                "Spatial resolution": 1,
+                "East-west direction": 1000,
+                "North-south direction": 500
+            },
+            "band5_16":{
+                "Spatial resolution": 2,
+                "East-west direction": 500,
+                "North-south direction": 250
+            }
+        }
+    }  
+}
