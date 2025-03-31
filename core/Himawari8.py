@@ -151,7 +151,7 @@ class himawari8_hsd:
                 info = f.read()
         
         # 定义Himawari-8二进制格式化规则
-        with open(os.path.join(os.path.dirname(__file__), 'Himawari_Standard_Data_v1.3.json')) as f:
+        with open(os.path.join(os.path.dirname(__file__), '../config/Himawari_Standard_Data.json')) as f:
             hsd_form = json.load(f)
             formation = hsd_form['Formation']
             frame = hsd_form['Frame']
