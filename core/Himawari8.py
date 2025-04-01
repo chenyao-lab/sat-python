@@ -3,95 +3,7 @@ import os
 import bz2
 import json
 import numpy as np
-from numpy import sin,cos,arctan,pi,sqrt
-
-def lc2latlon_himawari8(x, y, **kwargs):
-    """
-    Himawari-8卫星行列号转经纬度
-
-    Parameters
-    -----
-    x : int
-        行号. 一维数组或列表, 长度等于坐标点的个数.
-    y : int
-        列号. 一维数组或列表, 长度等于坐标点的个数且应与x的长度相等.
-    sub_lon : float, optional
-        星下点经度
-    h : float, optional
-        卫星高度(km)
-    CFAC : int
-        列比例因子
-    LFAC : int
-        行比例因子
-    COFF : int
-        列偏移
-    LOFF : int
-        行偏移
-    ea : float
-        地球半长轴
-    eb : float
-        地球半短轴
-
-    Returns
-    -----
-    lon : 经度.
-    lat : 纬度.
-    """
-    
-    # 基本参数
-    default_parameters = {
-        # "sub_lon": 140.7,
-        # "CFAC": 40932549,
-        # "LFAC": 40932549,
-        # "COFF": 5500.5,
-        # "LOFF": 5500.5,
-        "h": 42164,
-        "ea": 6378.137,
-        "eb": 6356.7523
-    }
-    # 更新基本参数
-    default_parameters.update(kwargs)
-    # 获取参数
-    lambda_d = default_parameters['sub_lon']
-    CFAC = default_parameters['CFAC']
-    LFAC = default_parameters['LFAC']
-    COFF = default_parameters['COFF']
-    LOFF = default_parameters['LOFF']
-    h = default_parameters['h']
-    ea = default_parameters['ea']
-    eb = default_parameters['eb']
-    
-    
-    row = np.array(y)
-    col = np.array(x)
-
-    x = pi / 180.0 * (col - COFF) / (2**-16 * CFAC)
-    y = pi / 180.0 * (row - LOFF) / (2**-16 * LFAC)
-
-    with np.errstate(invalid='ignore'):
-        #  临时忽略警告
-        sd = sqrt(
-            (h * cos(x) * cos(y)) ** 2
-            - (cos(y) * cos(y) + (ea * ea) / (eb * eb) * sin(y) * sin(y)) 
-            * ((h * h) - (ea * ea))
-            )
-
-        sn = (h * cos(x) * cos(y) - sd) / (cos(y) * cos(y) + (ea * ea) / (eb * eb) * sin(y) * sin(y))
-
-        S1 = h - (sn * cos(x) * cos(y))
-        S2 = sn * sin(x) * cos(y)
-        S3 = -sn * sin(y)
-        Sxy = sqrt(S1 * S1 + S2 * S2)
-
-        lon = 180 / pi * arctan(S2 / S1) + lambda_d
-        lat = 180 / pi * arctan((ea * ea) / (eb * eb) * S3 / Sxy)
-
-    lat = np.array(lat, dtype=np.float32)
-    lon = np.array(lon, dtype=np.float32)
-
-    lon = np.where(lon>180, lon-360, lon)
-
-    return lon, lat
+from .lc2latlon import lc2latlon
 
 class himawari8_hsd:
     """
@@ -129,8 +41,7 @@ class himawari8_hsd:
             "ea": EA,
             "eb": EB
         }    
-        self.lc2latlon()  
-        self.calibrate_data()                              
+        self.lc2latlon()                           
                                                
     
     def __getitem__(self, varname):
@@ -239,7 +150,7 @@ class himawari8_hsd:
 
             pos += length
             block_count += length
-            
+        self.DN = fileinfo['Data']['Count value of each pixel'] 
         return fileinfo
 
     def lc2latlon(self):
@@ -250,11 +161,11 @@ class himawari8_hsd:
         lines = self.FileInfo["Data information"]["Number of lines"]
         first_line = self.FileInfo['Segment information']['First line number of image segment']
         xx, yy = np.meshgrid(np.arange(1, columns+1, 1), np.arange(first_line, first_line+lines, 1))
-        lon, lat = lc2latlon_himawari8(xx.flatten(), yy.flatten(), **self.proj_args)
+        lon, lat = lc2latlon(xx.flatten(), yy.flatten(), sat='Himawari8', **self.proj_args)
         self.lon = lon.reshape(xx.shape)
         self.lat = lat.reshape(yy.shape)
     
-    def calibrate_data(self):
+    def calibrate(self):
         """
         辐射定标, 1~6波段返回反射率, 7~16波段返回亮温
         """
@@ -270,7 +181,8 @@ class himawari8_hsd:
             offset = self.FileInfo['Calibration information']["Calibrated Intercept for count-radiance conversion equation_updated value of No. 9 of this block"]
             # 计算辐射率
             self.radiance = data * gain + offset     # W / (m2 * sr * μm)
-            self.albedo = self.radiance * self.FileInfo['Calibration information']["Coefficient for transformation from radiance  to albedo"]
+            albedo = self.radiance * self.FileInfo['Calibration information']["Coefficient for transformation from radiance  to albedo"]
+            return albedo
         else:
             gain = self.FileInfo['Calibration information']["Slope for count-radiance conversion equation"]
             offset = self.FileInfo['Calibration information']["Intercept for count-radiance conversion equation"]
@@ -285,3 +197,4 @@ class himawari8_hsd:
             c = self.FileInfo['Calibration information']["Speed of light"]
             Te = h * c / k / wl / np.log(2*h*c*c/((wl**5)*self.radiance)+1) # 有效亮温
             self.Tb = c0 + c1 * Te + c2 * Te * Te    # 亮温
+            return Tb

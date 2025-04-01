@@ -1,92 +1,7 @@
 import h5py
 import os
 import numpy as np
-from numpy import sin,cos,arctan,pi,sqrt
-
-def lc2latlon(x, y, resolution, lambda_d, h=42164):
-    """
-    FY4卫星行列号转经纬度
-
-    Parameters
-    -----
-    x : int
-        行号. 一维数组或列表, 长度等于坐标点的个数.
-    y : int
-        列号. 一维数组或列表, 长度等于坐标点的个数且应与x的长度相等.
-    resolution : int or str
-        数据的空间分辨率. 可取数值包括: 250, 500, 1000, 2000, 4000. 单位: 米.
-    lambda_d : float
-        卫星星下点经度.
-    h : int, default=42164
-        卫星质心与地球中心的距离.
-
-    Returns
-    -----
-    lon : 经度.
-    lat : 纬度.
-    """
-    
-    # 基本参数
-    ea, eb = 6378.137,  6356.7523   # unit: km
-    # 根据分辨率确定参数
-    if resolution in [250, '250']:
-        COFF = 21983.5
-        CFAC = 163730199
-        LOFF = 21983.5 
-        LFAC = 163730199 
-    elif resolution in [500, '500']:
-        COFF = 10991.5 
-        CFAC = 81865099 
-        LOFF = 10991.5 
-        LFAC = 81865099 
-    elif resolution in [1000, '1000']:
-        COFF = 5495.5  
-        CFAC = 40932549 
-        LOFF = 5495.5 
-        LFAC = 40932549 
-    elif resolution in [2000, '2000']:
-        COFF = 2747.5  
-        CFAC = 20466274  
-        LOFF = 2747.5 
-        LFAC = 20466274 
-    elif resolution in [4000, '4000']:
-        COFF = 1373.5  
-        CFAC = 10233137
-        LOFF = 1373.5  
-        LFAC = 10233137  
-    else:
-        raise ValueError("resolution must be 250, 500, 1000, 2000, or 4000")
-    
-    row = np.array(y)
-    col = np.array(x)
-
-    x = pi / 180.0 * (col - COFF) / (2**-16 * CFAC)
-    y = pi / 180.0 * (row - LOFF) / (2**-16 * LFAC)
-
-    with np.errstate(invalid='ignore'):
-        #  临时忽略警告
-        sd = sqrt(
-            (h * cos(x) * cos(y)) ** 2
-            - (cos(y) * cos(y) + (ea * ea) / (eb * eb) * sin(y) * sin(y)) 
-            * ((h * h) - (ea * ea))
-            )
-
-        sn = (h * cos(x) * cos(y) - sd) / (cos(y) * cos(y) + (ea * ea) / (eb * eb) * sin(y) * sin(y))
-
-        S1 = h - (sn * cos(x) * cos(y))
-        S2 = sn * sin(x) * cos(y)
-        S3 = -sn * sin(y)
-        Sxy = sqrt(S1 * S1 + S2 * S2)
-
-        lon = 180 / pi * arctan(S2 / S1) + lambda_d
-        lat = 180 / pi * arctan((ea * ea) / (eb * eb) * S3 / Sxy)
-
-    lat = np.array(lat, dtype=np.float32)
-    lon = np.array(lon, dtype=np.float32)
-
-    lon = np.where(lon>180, lon-360, lon)
-
-    return lon, lat
+from .lc2latlon import *
 
 class fy4_L1:
     NOMSatHeight = 42164    # 42164km指的是地心到卫星的距离，文件属性信息中的35786km指的是地表到卫星的距离
@@ -160,11 +75,11 @@ class fy4_L1:
         将行列号转为经纬度坐标
         """
         xx, yy = np.meshgrid(self.columns, self.lines)
-        lon, lat = lc2latlon(xx.flatten(), yy.flatten(), self.resolution, self.NOMSubSatLon, self.NOMSatHeight)
+        lon, lat = lc2latlon(xx.flatten(), yy.flatten(), sat='FY4', resolution=self.resolution, sub_lon=self.NOMSubSatLon)
         self.lon = lon.reshape(xx.shape)
         self.lat = lat.reshape(yy.shape)
 
-class fy4a_agri(fy4_L1):
+class agri(fy4_L1):
     """
     读取风云4A-AGRI的L1数据
     """
@@ -176,13 +91,13 @@ class fy4a_agri(fy4_L1):
     def read_data(self):
         # 获取各通道数值并进行辐射定标
         self.vars = [i for i in self.FileInfo.keys() if i[:10]=='NOMChannel']
-        self.data = {self.FileInfo[v][:] for v in self.vars}
+        self.data = {v:self.FileInfo[v][:] for v in self.vars}
     
     def calibrate(self):
         """
         辐射定标
         """
-        self.data = {}
+        calibrated_data = {}
         for v in self.vars:
             nom = self.FileInfo[v]
             cal = self.FileInfo['CALChannel'+v[10:]]
@@ -207,10 +122,10 @@ class fy4a_agri(fy4_L1):
             # 无效值处理(包括不在范围及填充值)
             target_channel[~nom_mask] = np.nan
             target_channel[target_channel == int(cal_min - 10)] = np.nan
-            self.calibrated_data[v] = target_channel
-        return self.calibrated_data
+            calibrated_data[v] = target_channel
+        return calibrated_data
     
-class fy4a_giirs(fy4_L1):
+class giirs(fy4_L1):
     """
     读取风云4A-GIIRS的L1数据
     """
@@ -229,6 +144,7 @@ class fy4a_giirs(fy4_L1):
         读取辐射数据
         """
         self.vars = ['VIS', 'NEdRLW', 'NEdRMW', 'RealLW', 'RealMW']
+        self.data = {}
         
         # 读取可见光数据并定标
         self.data['VIS'] = {'data':self.FileInfo['ES_ContVIS'],
@@ -283,7 +199,6 @@ class fy4a_giirs(fy4_L1):
         target_channel : array
             辐射定标后的数据
         """
-        self.calbrated_data = {}
         # 读取数据集
         nom = self.FileInfo['ES_ContVIS']
         cal = self.FileInfo['ES_CalSTableVIS']
